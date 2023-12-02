@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Learning Story</string>
+    <string name="message_main_page">Selamat Datang, ini merupakan halaman utama</string>
+    <string name="logout">Keluar</string>
+    <string name="title_landing_page">Selamat Datang di Learning Story</string>
+    <string name="message_landing_page">Informasi mengenai cerita-cerita belajar pemrograman dari berbagai narasumber sukses</string>
+    <string name="login">Masuk</string>
+    <string name="signup">Daftar</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="title_login_page">Masuk ke akunmu</string>
+    <string name="desc_login_page">Masukkan email dan password kamu untuk mengakses akunmu</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Nama</string>
+    <string name="title_signup_page">Buat akun baru</string>
+</resources>
