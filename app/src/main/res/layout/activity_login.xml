@@ -123,7 +123,7 @@
             app:startIconTint="@color/sky_blue"
             tools:alpha="100">
 
-            <com.rizqanmr.learningstory.util.CustomEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ed_login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

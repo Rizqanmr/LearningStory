@@ -8,7 +8,7 @@
     <string name="signup">Daftar</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_email">Email tidak sesuai format</string>
     <string name="invalid_password">Kata sandi harus memiliki setidaknya 8 karakter</string>
     <string name="login_failed">"Login failed"</string>
     <string name="title_login_page">Masuk ke akunmu</string>
