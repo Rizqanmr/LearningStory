@@ -11,4 +11,6 @@
     <string name="password">Password</string>
     <string name="name">Nama</string>
     <string name="title_signup_page">Buat akun baru</string>
+    <string name="image_login_page">Gambar halaman login</string>
+    <string name="image_register_page">Gambar halaman register</string>
 </resources>
