@@ -4,17 +4,18 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
+import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.databinding.ActivityMainBinding
+import com.rizqanmr.learningstory.util.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.landing.LandingActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseAppCompatActivity() {
     private val viewModel by viewModels<MainViewModel> {
         ViewModelFactory.getInstance(this)
     }
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             )
         }
         supportActionBar?.hide()
+        setStatusBarSolidColor(R.color.sky_blue, true)
     }
 
     private fun setupAction() {

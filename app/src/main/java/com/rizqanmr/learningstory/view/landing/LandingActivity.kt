@@ -4,17 +4,17 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.databinding.ActivityLandingBinding
+import com.rizqanmr.learningstory.util.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.login.LoginActivity
 import com.rizqanmr.learningstory.view.register.RegisterActivity
 
-class LandingActivity : AppCompatActivity() {
+class LandingActivity : BaseAppCompatActivity() {
     private lateinit var binding: ActivityLandingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +38,7 @@ class LandingActivity : AppCompatActivity() {
             )
         }
         supportActionBar?.hide()
+        setStatusBarSolidColor(R.color.sky_blue, true)
     }
 
     private fun setupAction() {

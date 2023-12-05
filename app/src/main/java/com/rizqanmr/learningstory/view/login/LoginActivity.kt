@@ -4,7 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
@@ -14,10 +13,11 @@ import androidx.appcompat.app.AlertDialog
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.UserModel
 import com.rizqanmr.learningstory.databinding.ActivityLoginBinding
+import com.rizqanmr.learningstory.util.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.main.MainActivity
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseAppCompatActivity() {
     private val viewModel by viewModels<LoginViewModel> {
         ViewModelFactory.getInstance(this)
     }
@@ -44,6 +44,7 @@ class LoginActivity : AppCompatActivity() {
             )
         }
         supportActionBar?.hide()
+        setStatusBarSolidColor(R.color.sky_blue, true)
     }
 
     private fun setupAction() {
