@@ -64,7 +64,7 @@ class RegisterActivity : BaseAppCompatActivity() {
                         }
                         is Result.Success -> {
                             showLoading(false)
-                            showSuccessRegister(email)
+                            handleSuccessRegister()
                         }
                         is Result.Error -> {
                             showLoading(false)
@@ -122,18 +122,9 @@ class RegisterActivity : BaseAppCompatActivity() {
         Snackbar.make(binding.containerRegister, message, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun showSuccessRegister(email: String) {
-        AlertDialog.Builder(this).apply {
-            setTitle("Sukses Mendaftar!")
-            setMessage("Akun dengan $email sudah jadi nih. Yuk, login!")
-            setPositiveButton("Lanjut") { _, _ ->
-                val intent = Intent(context, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                finish()
-            }
-            create()
-            show()
-        }
+    private fun handleSuccessRegister() {
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 }

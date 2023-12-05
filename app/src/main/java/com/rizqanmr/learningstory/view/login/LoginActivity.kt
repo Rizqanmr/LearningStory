@@ -9,9 +9,12 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.UserModel
+import com.rizqanmr.learningstory.data.model.reqbody.LoginReqBody
+import com.rizqanmr.learningstory.data.model.response.LoginResponse
+import com.rizqanmr.learningstory.data.repository.Result
 import com.rizqanmr.learningstory.databinding.ActivityLoginBinding
 import com.rizqanmr.learningstory.util.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
@@ -50,18 +53,24 @@ class LoginActivity : BaseAppCompatActivity() {
     private fun setupAction() {
         binding.btnLoginPage.setOnClickListener {
             val email = binding.edLoginEmail.text.toString()
-            viewModel.saveSession(UserModel(email, "sample_token"))
-            AlertDialog.Builder(this).apply {
-                setTitle("Yeah!")
-                setMessage("Anda berhasil login. Kuy lanjut belajar!")
-                setPositiveButton("Lanjut") { _, _ ->
-                    val intent = Intent(context, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
+            val password = binding.edLoginPassword.text.toString()
+
+            viewModel.login(LoginReqBody(email, password)).observe(this) {
+                if (it != null) {
+                    when (it) {
+                        is Result.Loading -> {
+                            showLoading(true)
+                        }
+                        is Result.Success -> {
+                            showLoading(false)
+                            handleSuccessLogin(it)
+                        }
+                        is Result.Error -> {
+                            showLoading(false)
+                            showSnackbarError(it.error)
+                        }
+                    }
                 }
-                create()
-                show()
             }
         }
     }
@@ -98,5 +107,22 @@ class LoginActivity : BaseAppCompatActivity() {
             )
             startDelay = 100
         }.start()
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showSnackbarError(message: String) {
+        Snackbar.make(binding.containerLogin, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun handleSuccessLogin(result: Result.Success<LoginResponse>) {
+        val loginResult = result.data.loginResult
+        viewModel.saveSession(UserModel(loginResult?.userId.toString(), loginResult?.token.toString()))
+
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 }
