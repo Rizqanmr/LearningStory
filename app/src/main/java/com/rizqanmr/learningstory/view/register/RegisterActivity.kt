@@ -9,7 +9,6 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.repository.Result
@@ -39,7 +38,7 @@ class RegisterActivity : BaseAppCompatActivity() {
     private fun setupView() {
         @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
+            window.insetsController?.show(WindowInsets.Type.statusBars())
         } else {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,

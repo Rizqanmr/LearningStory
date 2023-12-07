@@ -1,15 +1,17 @@
 package com.rizqanmr.learningstory.view.main
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
+import com.rizqanmr.learningstory.data.repository.Result
 import com.rizqanmr.learningstory.databinding.ActivityMainBinding
 import com.rizqanmr.learningstory.util.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
@@ -21,10 +23,13 @@ class MainActivity : BaseAppCompatActivity() {
     }
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var storyAdapter: StoryAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        storyAdapter = StoryAdapter()
 
         viewModel.getSession().observe(this) { user ->
             if (!user.isLogin) {
@@ -35,43 +40,82 @@ class MainActivity : BaseAppCompatActivity() {
 
         setupView()
         setupAction()
-        playAnimation()
     }
 
     private fun setupView() {
-        @Suppress("DEPRECATION")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-        }
-        supportActionBar?.hide()
+        setupToolbar()
         setStatusBarSolidColor(R.color.sky_blue, true)
+
+        binding.rvStory.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
+            setHasFixedSize(true)
+            adapter = storyAdapter
+        }
+
+        showListStory()
     }
 
     private fun setupAction() {
-        binding.btnLogout.setOnClickListener {
-            viewModel.logout()
+        //
+    }
+
+    private fun showListStory() {
+        viewModel.getStories().observe(this) {
+            if (it != null) {
+                when (it) {
+                    is Result.Loading -> {
+                        showLoading(true)
+                    }
+                    is Result.Success -> {
+                        showLoading(false)
+                        storyAdapter.updateItems(it.data.listStory)
+                    }
+                    is Result.Error -> {
+                        showLoading(false)
+                        showSnackbarError(it.error)
+                    }
+                }
+            }
         }
     }
 
-    private fun playAnimation() {
-        ObjectAnimator.ofFloat(binding.ivMain, View.TRANSLATION_X, -30f, 30f).apply {
-            duration = 6000
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-        }.start()
+    private fun setupToolbar() {
+        initToolbar(
+            binding.toolbarMain,
+            resources.getText(R.string.app_name).toString(),
+            R.color.black,
+            R.color.black,
+            R.color.white,
+            R.drawable.ic_arrow_back
+        )
+        supportActionBar?.elevation = 5f
+        binding.toolbarMain.btnBack.isVisible = false
+    }
 
-        val name = ObjectAnimator.ofFloat(binding.tvName, View.ALPHA, 1f).setDuration(100)
-        val message = ObjectAnimator.ofFloat(binding.tvMessage, View.ALPHA, 1f).setDuration(100)
-        val logout = ObjectAnimator.ofFloat(binding.btnLogout, View.ALPHA, 1f).setDuration(100)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
 
-        AnimatorSet().apply {
-            playSequentially(name, message, logout)
-            startDelay = 100
-        }.start()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_setting -> {
+                // go to setting page
+                true
+            }
+            R.id.menu_logout -> {
+                viewModel.logout()
+                true
+            }
+            else -> true
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showSnackbarError(message: String) {
+        Snackbar.make(binding.containerMain, message, Snackbar.LENGTH_SHORT).show()
     }
 }

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Learning Story</string>
-    <string name="message_main_page">Selamat Datang, ini merupakan halaman utama</string>
+    <string name="message_main_page">Selamat Datang, ini merupakan halaman utama yang menampilkan item story</string>
     <string name="logout">Keluar</string>
     <string name="title_landing_page">Selamat Datang di Learning Story</string>
     <string name="message_landing_page">Informasi mengenai cerita-cerita belajar pemrograman dari berbagai narasumber sukses</string>
@@ -19,4 +19,7 @@
     <string name="title_signup_page">Buat akun baru</string>
     <string name="image_login_page">Gambar halaman login</string>
     <string name="image_register_page">Gambar halaman register</string>
+    <string name="image_story">Gambar Story</string>
+    <string name="button_back">Button Back</string>
+    <string name="setting">Setting</string>
 </resources>

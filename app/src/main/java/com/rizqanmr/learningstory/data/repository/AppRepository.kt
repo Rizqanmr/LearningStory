@@ -2,6 +2,7 @@ package com.rizqanmr.learningstory.data.repository
 
 import androidx.lifecycle.liveData
 import com.google.gson.Gson
+import com.rizqanmr.learningstory.data.api.ApiConfig
 import com.rizqanmr.learningstory.data.api.ApiService
 import com.rizqanmr.learningstory.data.model.UserModel
 import com.rizqanmr.learningstory.data.model.reqbody.LoginReqBody
@@ -9,6 +10,8 @@ import com.rizqanmr.learningstory.data.pref.UserPreference
 import com.rizqanmr.learningstory.data.model.reqbody.RegisterReqBody
 import com.rizqanmr.learningstory.data.model.response.ErrorResponse
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 
 class AppRepository private constructor(
@@ -44,6 +47,19 @@ class AppRepository private constructor(
         try {
             val response = apiService.login(loginReqBody)
             emit(Result.Success(response))
+        } catch (e: HttpException) {
+            emit(Result.Error(getErrorMessage(e)))
+        }
+    }
+
+    fun getStories() = liveData {
+        emit(Result.Loading)
+
+        try {
+            val user = runBlocking { userPreference.getSession().first() }
+            val response = ApiConfig.getApiService(user.token)
+            val responseStory = response.getStories()
+            emit(Result.Success(responseStory))
         } catch (e: HttpException) {
             emit(Result.Error(getErrorMessage(e)))
         }
