@@ -15,6 +15,9 @@
         android:theme="@style/Theme.LearningStory"
         tools:targetApi="31">
         <activity
+            android:name=".view.storydetail.StoryDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.register.RegisterActivity"
             android:exported="false" />
         <activity

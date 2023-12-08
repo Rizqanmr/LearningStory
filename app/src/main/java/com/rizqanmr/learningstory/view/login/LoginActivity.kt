@@ -110,7 +110,7 @@ class LoginActivity : BaseAppCompatActivity() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        binding.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.layoutLoading.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     private fun showSnackbarError(message: String) {

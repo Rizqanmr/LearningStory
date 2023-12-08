@@ -48,6 +48,7 @@
                     android:lines="1"
                     android:singleLine="true"
                     android:textSize="18sp"
+                    android:textStyle="bold"
                     tools:text="Screen Title" />
 
             </RelativeLayout>

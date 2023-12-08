@@ -8,6 +8,7 @@ import com.rizqanmr.learningstory.di.Injection
 import com.rizqanmr.learningstory.view.login.LoginViewModel
 import com.rizqanmr.learningstory.view.main.MainViewModel
 import com.rizqanmr.learningstory.view.register.RegisterViewModel
+import com.rizqanmr.learningstory.view.storydetail.StoryDetailViewModel
 
 class ViewModelFactory(private val repository: AppRepository) : ViewModelProvider.NewInstanceFactory() {
 
@@ -22,6 +23,9 @@ class ViewModelFactory(private val repository: AppRepository) : ViewModelProvide
             }
             modelClass.isAssignableFrom(RegisterViewModel::class.java) -> {
                 RegisterViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(StoryDetailViewModel::class.java) -> {
+                StoryDetailViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

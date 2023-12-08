@@ -9,15 +9,26 @@ import com.rizqanmr.learningstory.util.BaseListAdapter
 
 class StoryAdapter : BaseListAdapter<StoryItemResponse, ItemStoryBinding>() {
 
+    private lateinit var storyListener: StoryListener
+
+    fun setStoryListener(storyListener: StoryListener) {
+        this.storyListener = storyListener
+    }
+
     override fun getLayoutId(): Int = R.layout.item_story
     override fun onBind(binding: ItemStoryBinding, position: Int, item: StoryItemResponse) {
         binding.item = item
-        binding.apply {
+        with(binding) {
             Glide.with(root.context)
                 .load(item.photoUrl)
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_loading).error(R.drawable.ic_error))
-                .into(ivStory)
+                .into(ivItemPhoto)
+
+            cvStory.setOnClickListener { storyListener.onItemClick(binding, position, item) }
         }
     }
 
+    interface StoryListener {
+        fun onItemClick(binding: ItemStoryBinding, position: Int, item: StoryItemResponse)
+    }
 }

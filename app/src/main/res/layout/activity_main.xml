@@ -25,22 +25,13 @@
         tools:listitem="@layout/item_story"
         tools:itemCount="3" />
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <include
+        android:id="@+id/layout_loading"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_main"
+        layout="@layout/layout_loading" />
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progress_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="visible"
-            app:indicatorColor="@color/sky_blue" />
-
-    </FrameLayout>
+    <include
+        android:id="@+id/layout_error"
+        layout="@layout/layout_error_empty" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

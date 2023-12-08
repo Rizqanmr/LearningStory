@@ -6,16 +6,21 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
+import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
 import com.rizqanmr.learningstory.data.repository.Result
 import com.rizqanmr.learningstory.databinding.ActivityMainBinding
+import com.rizqanmr.learningstory.databinding.ItemStoryBinding
 import com.rizqanmr.learningstory.util.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.landing.LandingActivity
+import com.rizqanmr.learningstory.view.storydetail.StoryDetailActivity
 
 class MainActivity : BaseAppCompatActivity() {
     private val viewModel by viewModels<MainViewModel> {
@@ -56,7 +61,21 @@ class MainActivity : BaseAppCompatActivity() {
     }
 
     private fun setupAction() {
-        //
+        storyAdapter.setStoryListener(object : StoryAdapter.StoryListener {
+            override fun onItemClick(view: ItemStoryBinding, position: Int, item: StoryItemResponse) {
+                val optionCompat: ActivityOptionsCompat =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        this@MainActivity,
+                        Pair(view.ivItemPhoto, "item_photo"),
+                        Pair(view.tvItemName, "item_name"),
+                        Pair(view.tvDescription, "item_desc")
+                    )
+                StoryDetailActivity.startThisActivity(this@MainActivity, optionCompat.toBundle()
+                    ?.apply {
+                        putString("EXTRA_ID_STORY", item.id)
+                    })
+            }
+        })
     }
 
     private fun showListStory() {
@@ -68,11 +87,19 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                     is Result.Success -> {
                         showLoading(false)
-                        storyAdapter.updateItems(it.data.listStory)
+                        if (it.data.listStory.isNotEmpty()) {
+                            binding.rvStory.isVisible = true
+                            storyAdapter.updateItems(it.data.listStory)
+                        } else {
+                            binding.rvStory.isVisible = false
+                            showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.EMPTY_LIST)
+                        }
                     }
                     is Result.Error -> {
                         showLoading(false)
                         showSnackbarError(it.error)
+                        showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.ERROR)
+                        binding.layoutError.btnRefresh.setOnClickListener { viewModel.getStories() }
                     }
                 }
             }
@@ -85,10 +112,9 @@ class MainActivity : BaseAppCompatActivity() {
             resources.getText(R.string.app_name).toString(),
             R.color.black,
             R.color.black,
-            R.color.white,
+            R.color.sky_blue,
             R.drawable.ic_arrow_back
         )
-        supportActionBar?.elevation = 5f
         binding.toolbarMain.btnBack.isVisible = false
     }
 
@@ -112,7 +138,7 @@ class MainActivity : BaseAppCompatActivity() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        binding.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.layoutLoading.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     private fun showSnackbarError(message: String) {

@@ -32,7 +32,6 @@ class AppRepository private constructor(
 
     fun registerUser(registerReqBody: RegisterReqBody) = liveData {
         emit(Result.Loading)
-
         try {
             val response = apiService.register(registerReqBody)
             emit(Result.Success(response))
@@ -43,7 +42,6 @@ class AppRepository private constructor(
 
     fun login(loginReqBody: LoginReqBody) = liveData {
         emit(Result.Loading)
-
         try {
             val response = apiService.login(loginReqBody)
             emit(Result.Success(response))
@@ -54,15 +52,27 @@ class AppRepository private constructor(
 
     fun getStories() = liveData {
         emit(Result.Loading)
-
         try {
-            val user = runBlocking { userPreference.getSession().first() }
-            val response = ApiConfig.getApiService(user.token)
-            val responseStory = response.getStories()
-            emit(Result.Success(responseStory))
+            val response = getToken().getStories()
+            emit(Result.Success(response))
         } catch (e: HttpException) {
             emit(Result.Error(getErrorMessage(e)))
         }
+    }
+
+    fun getStoryDetail(storyId: String) = liveData {
+        emit(Result.Loading)
+        try {
+            val response = getToken().getStoryDetail(storyId)
+            emit(Result.Success(response))
+        } catch (e: HttpException) {
+            emit(Result.Error(getErrorMessage(e)))
+        }
+    }
+
+    private fun getToken(): ApiService {
+        val user = runBlocking { userPreference.getSession().first() }
+        return ApiConfig.getApiService(user.token)
     }
 
     private fun getErrorMessage(exception: HttpException) : String {

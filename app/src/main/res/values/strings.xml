@@ -22,4 +22,11 @@
     <string name="image_story">Gambar Story</string>
     <string name="button_back">Button Back</string>
     <string name="setting">Setting</string>
+    <string name="try_again">Coba Lagi</string>
+    <string name="no_data">Tidak ada data</string>
+    <string name="there_is_an_error">Terjadi kesalahan</string>
+    <string name="try_again_in_a_few_moment">Silahkan coba beberapa saat lagi</string>
+    <string name="no_connection">Tidak ada koneksi</string>
+    <string name="please_check_connection">Silahkan periksa koneksi internet anda</string>
+    <string name="created_at">Dibuat pada %s</string>
 </resources>
