@@ -14,10 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
-import com.rizqanmr.learningstory.data.repository.Result
 import com.rizqanmr.learningstory.databinding.ActivityMainBinding
 import com.rizqanmr.learningstory.databinding.ItemStoryBinding
-import com.rizqanmr.learningstory.util.BaseAppCompatActivity
+import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.landing.LandingActivity
 import com.rizqanmr.learningstory.view.storydetail.StoryDetailActivity
@@ -36,15 +35,10 @@ class MainActivity : BaseAppCompatActivity() {
         setContentView(binding.root)
         storyAdapter = StoryAdapter()
 
-        viewModel.getSession().observe(this) { user ->
-            if (!user.isLogin) {
-                startActivity(Intent(this, LandingActivity::class.java))
-                finish()
-            }
-        }
-
         setupView()
         setupAction()
+        viewModel.getStories()
+        subscribeToLiveData()
     }
 
     private fun setupView() {
@@ -56,8 +50,24 @@ class MainActivity : BaseAppCompatActivity() {
             setHasFixedSize(true)
             adapter = storyAdapter
         }
+    }
 
-        showListStory()
+    private fun subscribeToLiveData() {
+        viewModel.getSession().observe(this) { user ->
+            if (!user.isLogin) {
+                startActivity(Intent(this, LandingActivity::class.java))
+                finish()
+            }
+        }
+        viewModel.getIsLoading().observe(this) {
+            showLoading(it)
+        }
+        viewModel.listStoryLiveData().observe(this) {
+            showListStory(it)
+        }
+        viewModel.errorListStoryLiveData().observe(this) {
+            handleError(it)
+        }
     }
 
     private fun setupAction() {
@@ -76,34 +86,6 @@ class MainActivity : BaseAppCompatActivity() {
                     })
             }
         })
-    }
-
-    private fun showListStory() {
-        viewModel.getStories().observe(this) {
-            if (it != null) {
-                when (it) {
-                    is Result.Loading -> {
-                        showLoading(true)
-                    }
-                    is Result.Success -> {
-                        showLoading(false)
-                        if (it.data.listStory.isNotEmpty()) {
-                            binding.rvStory.isVisible = true
-                            storyAdapter.updateItems(it.data.listStory)
-                        } else {
-                            binding.rvStory.isVisible = false
-                            showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.EMPTY_LIST)
-                        }
-                    }
-                    is Result.Error -> {
-                        showLoading(false)
-                        showSnackbarError(it.error)
-                        showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.ERROR)
-                        binding.layoutError.btnRefresh.setOnClickListener { viewModel.getStories() }
-                    }
-                }
-            }
-        }
     }
 
     private fun setupToolbar() {
@@ -143,5 +125,21 @@ class MainActivity : BaseAppCompatActivity() {
 
     private fun showSnackbarError(message: String) {
         Snackbar.make(binding.containerMain, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showListStory(list: List<StoryItemResponse>) {
+        if (list.isNotEmpty()) {
+            binding.rvStory.isVisible = true
+            storyAdapter.updateItems(list)
+        } else {
+            binding.rvStory.isVisible = false
+            showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.EMPTY_LIST)
+        }
+    }
+
+    private fun handleError(error: String) {
+        showSnackbarError(error)
+        showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.ERROR)
+        binding.layoutError.btnRefresh.setOnClickListener { viewModel.getStories() }
     }
 }

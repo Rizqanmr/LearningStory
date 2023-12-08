@@ -10,7 +10,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.databinding.ActivityLandingBinding
-import com.rizqanmr.learningstory.util.BaseAppCompatActivity
+import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.login.LoginActivity
 import com.rizqanmr.learningstory.view.register.RegisterActivity
 

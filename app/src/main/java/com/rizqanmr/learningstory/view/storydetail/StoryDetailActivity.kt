@@ -10,9 +10,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.response.StoryDetailResponse
-import com.rizqanmr.learningstory.data.repository.Result
 import com.rizqanmr.learningstory.databinding.ActivityStoryDetailBinding
-import com.rizqanmr.learningstory.util.BaseAppCompatActivity
+import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 
 class StoryDetailActivity : BaseAppCompatActivity() {
@@ -27,8 +26,9 @@ class StoryDetailActivity : BaseAppCompatActivity() {
         binding = ActivityStoryDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initExtraData(intent)
-        getStoryDetail()
         setupView()
+        viewModel.getStoryDetail()
+        subscribeToLiveData()
     }
 
     private fun setupView() {
@@ -51,23 +51,17 @@ class StoryDetailActivity : BaseAppCompatActivity() {
         viewModel.setStoryId(intent.getStringExtra("EXTRA_ID_STORY").orEmpty())
     }
 
-    private fun getStoryDetail() {
-        viewModel.getStoryDetail().observe(this) {
+    private fun subscribeToLiveData() {
+        viewModel.getIsLoading().observe(this) {
+            showLoading(it)
+        }
+        viewModel.storyDetailLiveData().observe(this) {
             if (it != null) {
-                when (it) {
-                    is Result.Loading -> {
-                        showLoading(true)
-                    }
-                    is Result.Success -> {
-                        showLoading(false)
-                        showStoryDetail(it.data)
-                    }
-                    is Result.Error -> {
-                        showLoading(false)
-                        showSnackbarError(it.error)
-                    }
-                }
+                showStoryDetail(it)
             }
+        }
+        viewModel.errorStoryDetailLiveData().observe(this) {
+            showSnackbarError(it)
         }
     }
 

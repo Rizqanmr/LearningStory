@@ -1,6 +1,5 @@
 package com.rizqanmr.learningstory.data.repository
 
-import androidx.lifecycle.liveData
 import com.google.gson.Gson
 import com.rizqanmr.learningstory.data.api.ApiConfig
 import com.rizqanmr.learningstory.data.api.ApiService
@@ -8,7 +7,7 @@ import com.rizqanmr.learningstory.data.model.UserModel
 import com.rizqanmr.learningstory.data.model.reqbody.LoginReqBody
 import com.rizqanmr.learningstory.data.pref.UserPreference
 import com.rizqanmr.learningstory.data.model.reqbody.RegisterReqBody
-import com.rizqanmr.learningstory.data.model.response.ErrorResponse
+import com.rizqanmr.learningstory.data.model.response.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -30,43 +29,39 @@ class AppRepository private constructor(
         userPreference.logout()
     }
 
-    fun registerUser(registerReqBody: RegisterReqBody) = liveData {
-        emit(Result.Loading)
-        try {
+    suspend fun registerUser(registerReqBody: RegisterReqBody): Result<RegisterResponse> {
+        return try {
             val response = apiService.register(registerReqBody)
-            emit(Result.Success(response))
+            Result.Success(response)
         } catch (e: HttpException) {
-            emit(Result.Error(getErrorMessage(e)))
+            Result.Error(getErrorMessage(e))
         }
     }
 
-    fun login(loginReqBody: LoginReqBody) = liveData {
-        emit(Result.Loading)
-        try {
+    suspend fun login(loginReqBody: LoginReqBody): Result<LoginResponse> {
+        return try {
             val response = apiService.login(loginReqBody)
-            emit(Result.Success(response))
+            Result.Success(response)
         } catch (e: HttpException) {
-            emit(Result.Error(getErrorMessage(e)))
+            Result.Error(getErrorMessage(e))
         }
     }
 
-    fun getStories() = liveData {
-        emit(Result.Loading)
-        try {
+    suspend fun getStories(): Result<StoryResponse> {
+        return try {
             val response = getToken().getStories()
-            emit(Result.Success(response))
+            Result.Success(response)
         } catch (e: HttpException) {
-            emit(Result.Error(getErrorMessage(e)))
+            Result.Error(getErrorMessage(e))
         }
     }
 
-    fun getStoryDetail(storyId: String) = liveData {
-        emit(Result.Loading)
-        try {
+    suspend fun getStoryDetail(storyId: String): Result<StoryDetailResponse> {
+        return try {
             val response = getToken().getStoryDetail(storyId)
-            emit(Result.Success(response))
+            Result.Success(response)
         } catch (e: HttpException) {
-            emit(Result.Error(getErrorMessage(e)))
+            Result.Error(getErrorMessage(e))
         }
     }
 

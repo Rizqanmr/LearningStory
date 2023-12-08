@@ -14,9 +14,8 @@ import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.UserModel
 import com.rizqanmr.learningstory.data.model.reqbody.LoginReqBody
 import com.rizqanmr.learningstory.data.model.response.LoginResponse
-import com.rizqanmr.learningstory.data.repository.Result
 import com.rizqanmr.learningstory.databinding.ActivityLoginBinding
-import com.rizqanmr.learningstory.util.BaseAppCompatActivity
+import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.main.MainActivity
 
@@ -34,6 +33,7 @@ class LoginActivity : BaseAppCompatActivity() {
         setupView()
         setupAction()
         playAnimation()
+        subscribeToLiveData()
     }
 
     private fun setupView() {
@@ -54,24 +54,7 @@ class LoginActivity : BaseAppCompatActivity() {
         binding.btnLoginPage.setOnClickListener {
             val email = binding.edLoginEmail.text.toString()
             val password = binding.edLoginPassword.text.toString()
-
-            viewModel.login(LoginReqBody(email, password)).observe(this) {
-                if (it != null) {
-                    when (it) {
-                        is Result.Loading -> {
-                            showLoading(true)
-                        }
-                        is Result.Success -> {
-                            showLoading(false)
-                            handleSuccessLogin(it)
-                        }
-                        is Result.Error -> {
-                            showLoading(false)
-                            showSnackbarError(it.error)
-                        }
-                    }
-                }
-            }
+            viewModel.login(LoginReqBody(email, password))
         }
     }
 
@@ -109,6 +92,20 @@ class LoginActivity : BaseAppCompatActivity() {
         }.start()
     }
 
+    private fun subscribeToLiveData() {
+        viewModel.getIsLoading().observe(this) {
+            showLoading(it)
+        }
+        viewModel.loginLiveData().observe(this) {
+            if (it != null) {
+                handleSuccessLogin(it)
+            }
+        }
+        viewModel.errorLoginLiveData().observe(this) {
+            showSnackbarError(it)
+        }
+    }
+
     private fun showLoading(isLoading: Boolean) {
         binding.layoutLoading.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
@@ -117,8 +114,8 @@ class LoginActivity : BaseAppCompatActivity() {
         Snackbar.make(binding.containerLogin, message, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun handleSuccessLogin(result: Result.Success<LoginResponse>) {
-        val loginResult = result.data.loginResult
+    private fun handleSuccessLogin(result: LoginResponse) {
+        val loginResult = result.loginResult
         viewModel.saveSession(UserModel(loginResult?.userId.toString(), loginResult?.token.toString()))
 
         val intent = Intent(this, MainActivity::class.java)

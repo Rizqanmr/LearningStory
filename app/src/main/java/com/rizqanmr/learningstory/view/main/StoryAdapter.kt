@@ -5,7 +5,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
 import com.rizqanmr.learningstory.databinding.ItemStoryBinding
-import com.rizqanmr.learningstory.util.BaseListAdapter
+import com.rizqanmr.learningstory.base.BaseListAdapter
 
 class StoryAdapter : BaseListAdapter<StoryItemResponse, ItemStoryBinding>() {
 

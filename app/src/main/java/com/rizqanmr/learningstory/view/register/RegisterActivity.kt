@@ -11,10 +11,9 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
-import com.rizqanmr.learningstory.data.repository.Result
 import com.rizqanmr.learningstory.data.model.reqbody.RegisterReqBody
 import com.rizqanmr.learningstory.databinding.ActivityRegisterBinding
-import com.rizqanmr.learningstory.util.BaseAppCompatActivity
+import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.login.LoginActivity
 
@@ -33,6 +32,7 @@ class RegisterActivity : BaseAppCompatActivity() {
         setupView()
         setupAction()
         playAnimation()
+        subscribeToLiveData()
     }
 
     private fun setupView() {
@@ -54,24 +54,7 @@ class RegisterActivity : BaseAppCompatActivity() {
             val email = binding.edRegisterEmail.text.toString()
             val name = binding.edRegisterName.text.toString()
             val password = binding.edRegisterPassword.text.toString()
-
-            viewModel.registerUser(RegisterReqBody(name, email, password)).observe(this) {
-                if (it != null) {
-                    when (it) {
-                        is Result.Loading -> {
-                            showLoading(true)
-                        }
-                        is Result.Success -> {
-                            showLoading(false)
-                            handleSuccessRegister()
-                        }
-                        is Result.Error -> {
-                            showLoading(false)
-                            showSnackbarError(it.error)
-                        }
-                    }
-                }
-            }
+            viewModel.registerUser(RegisterReqBody(name, email, password))
         }
     }
 
@@ -111,6 +94,18 @@ class RegisterActivity : BaseAppCompatActivity() {
             )
             startDelay = 100
         }.start()
+    }
+
+    private fun subscribeToLiveData() {
+        viewModel.getIsLoading().observe(this) {
+            showLoading(it)
+        }
+        viewModel.registerLiveData().observe(this) {
+            handleSuccessRegister()
+        }
+        viewModel.errorRegisterLiveData().observe(this) {
+            showSnackbarError(it)
+        }
     }
 
     private fun showLoading(isLoading: Boolean) {

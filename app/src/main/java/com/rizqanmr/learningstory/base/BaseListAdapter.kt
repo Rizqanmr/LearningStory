@@ -1,4 +1,4 @@
-package com.rizqanmr.learningstory.util
+package com.rizqanmr.learningstory.base
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
