@@ -29,6 +29,6 @@ class StoryAdapter : BaseListAdapter<StoryItemResponse, ItemStoryBinding>() {
     }
 
     interface StoryListener {
-        fun onItemClick(binding: ItemStoryBinding, position: Int, item: StoryItemResponse)
+        fun onItemClick(view: ItemStoryBinding, position: Int, item: StoryItemResponse)
     }
 }
