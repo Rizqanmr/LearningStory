@@ -23,4 +23,8 @@
     <string name="no_connection">Tidak ada koneksi</string>
     <string name="please_check_connection">Silahkan periksa koneksi internet anda</string>
     <string name="created_at">Dibuat pada %s</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="upload">Upload</string>
+    <string name="description">description</string>
 </resources>

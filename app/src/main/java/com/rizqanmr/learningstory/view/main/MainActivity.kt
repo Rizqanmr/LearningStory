@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.os.bundleOf
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,7 @@ import com.rizqanmr.learningstory.databinding.ActivityMainBinding
 import com.rizqanmr.learningstory.databinding.ItemStoryBinding
 import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
+import com.rizqanmr.learningstory.view.createstory.CreateStoryActivity
 import com.rizqanmr.learningstory.view.landing.LandingActivity
 import com.rizqanmr.learningstory.view.storydetail.StoryDetailActivity
 
@@ -86,6 +88,10 @@ class MainActivity : BaseAppCompatActivity() {
                     })
             }
         })
+
+        binding.fabCreate.setOnClickListener {
+            CreateStoryActivity.startThisActivity(this@MainActivity, bundleOf())
+        }
     }
 
     private fun setupToolbar() {

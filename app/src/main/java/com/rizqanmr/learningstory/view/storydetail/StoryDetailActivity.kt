@@ -21,6 +21,7 @@ class StoryDetailActivity : BaseAppCompatActivity() {
     }
 
     private lateinit var binding: ActivityStoryDetailBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStoryDetailBinding.inflate(layoutInflater)
