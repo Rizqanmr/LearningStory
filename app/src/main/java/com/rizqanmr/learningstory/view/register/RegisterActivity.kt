@@ -2,13 +2,13 @@ package com.rizqanmr.learningstory.view.register
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.core.os.bundleOf
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.reqbody.RegisterReqBody
@@ -117,8 +117,6 @@ class RegisterActivity : BaseAppCompatActivity() {
     }
 
     private fun handleSuccessRegister() {
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+        LoginActivity.startThisActivity(this, bundleOf())
     }
 }

@@ -87,6 +87,7 @@ class StoryDetailActivity : BaseAppCompatActivity() {
     }
 
     companion object {
+        @JvmStatic
         fun startThisActivity(activity: Activity, bundle: Bundle?) {
             activity.startActivity(Intent(activity, StoryDetailActivity::class.java).apply {
                 bundle?.let { putExtras(it) }

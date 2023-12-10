@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.rizqanmr.learningstory.data.repository.AppRepository
 import com.rizqanmr.learningstory.di.Injection
+import com.rizqanmr.learningstory.view.createstory.CreateStoryViewModel
 import com.rizqanmr.learningstory.view.login.LoginViewModel
 import com.rizqanmr.learningstory.view.main.MainViewModel
 import com.rizqanmr.learningstory.view.register.RegisterViewModel
@@ -26,6 +27,9 @@ class ViewModelFactory(private val repository: AppRepository) : ViewModelProvide
             }
             modelClass.isAssignableFrom(StoryDetailViewModel::class.java) -> {
                 StoryDetailViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(CreateStoryViewModel::class.java) -> {
+                CreateStoryViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

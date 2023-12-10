@@ -11,7 +11,10 @@ import com.rizqanmr.learningstory.data.model.response.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.HttpException
+
 
 class AppRepository private constructor(
     private val userPreference: UserPreference,
@@ -59,6 +62,15 @@ class AppRepository private constructor(
     suspend fun getStoryDetail(storyId: String): Result<StoryDetailResponse> {
         return try {
             val response = getToken().getStoryDetail(storyId)
+            Result.Success(response)
+        } catch (e: HttpException) {
+            Result.Error(getErrorMessage(e))
+        }
+    }
+
+    suspend fun createStory(imageFile: MultipartBody.Part, description: RequestBody) : Result<RegisterResponse> {
+        return try {
+            val response = getToken().createStory(imageFile, description)
             Result.Success(response)
         } catch (e: HttpException) {
             Result.Error(getErrorMessage(e))

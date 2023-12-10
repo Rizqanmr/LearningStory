@@ -2,6 +2,7 @@ package com.rizqanmr.learningstory.view.login
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.core.os.bundleOf
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.UserModel
@@ -118,8 +120,16 @@ class LoginActivity : BaseAppCompatActivity() {
         val loginResult = result.loginResult
         viewModel.saveSession(UserModel(loginResult?.userId.toString(), loginResult?.token.toString()))
 
-        val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+        MainActivity.startThisActivity(this, bundleOf())
+    }
+
+    companion object {
+        @JvmStatic
+        fun startThisActivity(activity: Activity, bundle: Bundle) {
+            activity.startActivity(Intent(activity, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtras(bundle)
+            })
+        }
     }
 }

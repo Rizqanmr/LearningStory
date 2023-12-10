@@ -10,16 +10,25 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.databinding.ActivityCreateStoryBinding
+import com.rizqanmr.learningstory.util.CommonFunction.reduceFileImage
+import com.rizqanmr.learningstory.util.CommonFunction.uriToFile
+import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.createstory.CameraActivity.Companion.CAMERAX_RESULT
+import com.rizqanmr.learningstory.view.main.MainActivity
 
 class CreateStoryActivity : BaseAppCompatActivity() {
 
+    private val viewModel by viewModels<CreateStoryViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
     private lateinit var binding: ActivityCreateStoryBinding
     private var currentImageUri: Uri? = null
     private val requestPermissionLauncher =
@@ -39,6 +48,7 @@ class CreateStoryActivity : BaseAppCompatActivity() {
         setContentView(binding.root)
         setupView()
         setupAction()
+        subscribeToLiveData()
 
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
@@ -53,6 +63,7 @@ class CreateStoryActivity : BaseAppCompatActivity() {
     private fun setupAction() {
         binding.btnGallery.setOnClickListener { openGallery() }
         binding.btnCamera.setOnClickListener { openCamera() }
+        binding.btnUpload.setOnClickListener { uploadImage() }
     }
 
     private fun setupToolbar() {
@@ -66,11 +77,23 @@ class CreateStoryActivity : BaseAppCompatActivity() {
         )
     }
 
+    private fun subscribeToLiveData() {
+        viewModel.getIsLoading().observe(this) {
+            showLoading(it)
+        }
+        viewModel.createStoryLiveData().observe(this) {
+            handleSuccessCreateStory()
+        }
+        viewModel.errorCreateStoryLiveData().observe(this) {
+            showSnackbar(it)
+        }
+    }
+
     private fun showLoading(isLoading: Boolean) {
         binding.layoutLoading.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    private fun showSnackbarError(message: String) {
+    private fun showSnackbar(message: String) {
         Snackbar.make(binding.containerCreateStory, message, Snackbar.LENGTH_SHORT).show()
     }
 
@@ -115,9 +138,22 @@ class CreateStoryActivity : BaseAppCompatActivity() {
             REQUIRED_PERMISSION
         ) == PackageManager.PERMISSION_GRANTED
 
+    private fun uploadImage() {
+        currentImageUri?.let { uri ->
+            val imageFile = uriToFile(uri, this).reduceFileImage()
+            val description = binding.edAddDescription.text.toString()
+            viewModel.createStory(imageFile, description)
+        } ?: showSnackbar(getString(R.string.empty_image_warning))
+    }
+
+    private fun handleSuccessCreateStory() {
+        MainActivity.startThisActivity(this, bundleOf())
+    }
+
     companion object {
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
 
+        @JvmStatic
         fun startThisActivity(activity: Activity, bundle: Bundle) {
             activity.startActivity(Intent(activity, CreateStoryActivity::class.java).apply {
                 putExtras(bundle)

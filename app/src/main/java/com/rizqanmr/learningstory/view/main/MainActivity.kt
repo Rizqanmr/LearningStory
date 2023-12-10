@@ -1,5 +1,6 @@
 package com.rizqanmr.learningstory.view.main
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -147,5 +148,15 @@ class MainActivity : BaseAppCompatActivity() {
         showSnackbarError(error)
         showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.ERROR)
         binding.layoutError.btnRefresh.setOnClickListener { viewModel.getStories() }
+    }
+
+    companion object {
+        @JvmStatic
+        fun startThisActivity(activity: Activity, bundle: Bundle) {
+            activity.startActivity(Intent(activity, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtras(bundle)
+            })
+        }
     }
 }
