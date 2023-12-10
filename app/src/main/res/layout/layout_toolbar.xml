@@ -29,10 +29,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="@dimen/dp16"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/button_back"
-                    android:paddingVertical="5dp"
+                    android:paddingVertical="@dimen/dp4"
                     app:srcCompat="@drawable/ic_arrow_back" />
 
                 <TextView
@@ -41,13 +41,13 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginStart="@dimen/dp6"
+                    android:layout_marginEnd="@dimen/dp32"
                     android:layout_toEndOf="@id/btn_back"
                     android:ellipsize="end"
                     android:lines="1"
                     android:singleLine="true"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/sp18"
                     android:textStyle="bold"
                     tools:text="Screen Title" />
 
