@@ -1,24 +1,37 @@
 package com.rizqanmr.learningstory.view.createstory
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.os.bundleOf
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.databinding.ActivityCreateStoryBinding
+import com.rizqanmr.learningstory.view.createstory.CameraActivity.Companion.CAMERAX_RESULT
 
 class CreateStoryActivity : BaseAppCompatActivity() {
 
     private lateinit var binding: ActivityCreateStoryBinding
     private var currentImageUri: Uri? = null
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(this, "Permission request granted", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Permission request denied", Toast.LENGTH_LONG).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +39,10 @@ class CreateStoryActivity : BaseAppCompatActivity() {
         setContentView(binding.root)
         setupView()
         setupAction()
+
+        if (!allPermissionsGranted()) {
+            requestPermissionLauncher.launch(REQUIRED_PERMISSION)
+        }
     }
 
     private fun setupView() {
@@ -35,6 +52,7 @@ class CreateStoryActivity : BaseAppCompatActivity() {
 
     private fun setupAction() {
         binding.btnGallery.setOnClickListener { openGallery() }
+        binding.btnCamera.setOnClickListener { openCamera() }
     }
 
     private fun setupToolbar() {
@@ -60,6 +78,11 @@ class CreateStoryActivity : BaseAppCompatActivity() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
+    private fun openCamera() {
+        val intent = Intent(this, CameraActivity::class.java)
+        launcherIntentCameraX.launch(intent)
+    }
+
     private val launcherGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -71,13 +94,30 @@ class CreateStoryActivity : BaseAppCompatActivity() {
         }
     }
 
+    private val launcherIntentCameraX = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == CAMERAX_RESULT) {
+            currentImageUri = it.data?.getStringExtra(CameraActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
+            showImage()
+        }
+    }
+
     private fun showImage() {
         currentImageUri?.let {
             binding.ivPreview.setImageURI(it)
         }
     }
 
+    private fun allPermissionsGranted() =
+        ContextCompat.checkSelfPermission(
+            this,
+            REQUIRED_PERMISSION
+        ) == PackageManager.PERMISSION_GRANTED
+
     companion object {
+        private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
+
         fun startThisActivity(activity: Activity, bundle: Bundle) {
             activity.startActivity(Intent(activity, CreateStoryActivity::class.java).apply {
                 putExtras(bundle)
