@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Learning Story</string>
+    <string name="message_main_page">Selamat datang, ini adalah halaman utama yang menampilkan item cerita</string>
+    <string name="logout">Keluar</string>
+    <string name="title_landing_page">Selamat datang di Learning Story</string>
+    <string name="message_landing_page">Informasi cerita belajar pemrograman dari berbagai sumber yang sudah sukses</string>
+    <string name="login">Masuk</string>
+    <string name="signup">Daftar</string>
+    <string name="welcome">Selamat Datang !</string>
+    <string name="invalid_email">Email tidak sesuai format</string>
+    <string name="invalid_password">Kata sandi harus memiliki minimal 8 karakter</string>
+    <string name="login_failed">Gagal masuk</string>
+    <string name="title_login_page">Masuk ke akunmu</string>
+    <string name="desc_login_page">Masukkan email dan kata sandi Anda untuk mengakses akun Anda</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Nama</string>
+    <string name="title_signup_page">Buat akun baru</string>
+    <string name="image_login_page">Gambar halaman login</string>
+    <string name="image_register_page">Gambar halaman pendaftaran</string>
+    <string name="image_story">Gambar cerita</string>
+    <string name="button_back">Tombol kembali</string>
+    <string name="setting">Pengaturan</string>
+    <string name="try_again">Coba lagi</string>
+    <string name="no_data">Tidak ada data</string>
+    <string name="there_is_an_error">Terjadi kesalahan</string>
+    <string name="try_again_in_a_few_moment">Silakan coba lagi dalam beberapa saat</string>
+    <string name="no_connection">Tidak ada koneksi internet</string>
+    <string name="please_check_connection">Silahkan perika koneksi internet anda</string>
+    <string name="created_at">Dibuat pada %s</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="upload">Unggah</string>
+    <string name="description">deskripsi</string>
+    <string name="empty_image_warning">Tidak ada gambar. Silahkan masukkan gambar terlebih dahulu</string>
+    <string name="create_story">Buat Cerita</string>
+    <string name="no_media_selected">Tidak ada media yang dipilih</string>
+    <string name="detail_story">Detail Cerita</string>
+</resources>

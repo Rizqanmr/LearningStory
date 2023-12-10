@@ -3,6 +3,7 @@ package com.rizqanmr.learningstory.view.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -98,7 +99,7 @@ class MainActivity : BaseAppCompatActivity() {
     private fun setupToolbar() {
         initToolbar(
             binding.toolbarMain,
-            resources.getText(R.string.app_name).toString(),
+            getString(R.string.app_name),
             R.color.black,
             R.color.black,
             R.color.sky_blue,
@@ -115,7 +116,7 @@ class MainActivity : BaseAppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_setting -> {
-                // go to setting page
+                startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
                 true
             }
             R.id.menu_logout -> {

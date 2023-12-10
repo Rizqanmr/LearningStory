@@ -69,7 +69,7 @@ class CreateStoryActivity : BaseAppCompatActivity() {
     private fun setupToolbar() {
         initToolbar(
             binding.toolbarCreateStory,
-            "Create Story",
+            getString(R.string.create_story),
             R.color.black,
             R.color.black,
             R.color.white,
@@ -113,7 +113,7 @@ class CreateStoryActivity : BaseAppCompatActivity() {
             currentImageUri = uri
             showImage()
         } else {
-            Toast.makeText(this, "No media selected", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_media_selected), Toast.LENGTH_SHORT).show()
         }
     }
 

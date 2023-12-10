@@ -40,7 +40,7 @@ class StoryDetailActivity : BaseAppCompatActivity() {
     private fun setupToolbar() {
         initToolbar(
             binding.toolbarDetail,
-            "Detail Story",
+            getString(R.string.detail_story),
             R.color.black,
             R.color.black,
             R.color.white,
