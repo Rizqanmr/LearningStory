@@ -1,6 +1,7 @@
 package com.rizqanmr.learningstory.data.model.response
 
 import com.google.gson.annotations.SerializedName
+import com.rizqanmr.learningstory.base.BaseListItem
 
 data class StoryItemResponse(
     @field:SerializedName("photoUrl")
@@ -23,4 +24,4 @@ data class StoryItemResponse(
 
     @field:SerializedName("lat")
     val lat: Double? = null
-)
+) : BaseListItem(0)

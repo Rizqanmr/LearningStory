@@ -76,17 +76,17 @@ class MainActivity : BaseAppCompatActivity() {
 
     private fun setupAction() {
         storyAdapter.setStoryListener(object : StoryAdapter.StoryListener {
-            override fun onItemClick(view: ItemStoryBinding, position: Int, item: StoryItemResponse) {
+            override fun onItemClick(itemStory: ItemStoryBinding, itemResponse: StoryItemResponse) {
                 val optionCompat: ActivityOptionsCompat =
                     ActivityOptionsCompat.makeSceneTransitionAnimation(
                         this@MainActivity,
-                        Pair(view.ivItemPhoto, "item_photo"),
-                        Pair(view.tvItemName, "item_name"),
-                        Pair(view.tvDescription, "item_desc")
+                        Pair(itemStory.ivItemPhoto, "item_photo"),
+                        Pair(itemStory.tvItemName, "item_name"),
+                        Pair(itemStory.tvDescription, "item_desc")
                     )
                 StoryDetailActivity.startThisActivity(this@MainActivity, optionCompat.toBundle()
                     ?.apply {
-                        putString("EXTRA_ID_STORY", item.id)
+                        putString("EXTRA_ID_STORY", itemResponse.id)
                     })
             }
         })

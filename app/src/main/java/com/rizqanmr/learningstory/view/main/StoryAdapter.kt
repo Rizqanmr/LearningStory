@@ -1,13 +1,34 @@
 package com.rizqanmr.learningstory.view.main
 
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.DiffUtil
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
 import com.rizqanmr.learningstory.databinding.ItemStoryBinding
 import com.rizqanmr.learningstory.base.BaseListAdapter
+import com.rizqanmr.learningstory.base.BaseListItem
 
-class StoryAdapter : BaseListAdapter<StoryItemResponse, ItemStoryBinding>() {
+class StoryAdapter : BaseListAdapter(DIFF_CALLBACK) {
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BaseListItem>() {
+            override fun areItemsTheSame(oldItem: BaseListItem, newItem: BaseListItem): Boolean {
+                return if (oldItem is StoryItemResponse && newItem is StoryItemResponse) {
+                    oldItem.itemTypeId == newItem.itemTypeId
+                } else false
+            }
+
+            override fun areContentsTheSame(oldItem: BaseListItem, newItem: BaseListItem): Boolean {
+                return if (oldItem is StoryItemResponse && newItem is StoryItemResponse) {
+                    (oldItem as? StoryItemResponse)?.equals(newItem as? StoryItemResponse)
+                        ?: false
+                } else false
+            }
+        }
+    }
 
     private lateinit var storyListener: StoryListener
 
@@ -15,20 +36,29 @@ class StoryAdapter : BaseListAdapter<StoryItemResponse, ItemStoryBinding>() {
         this.storyListener = storyListener
     }
 
-    override fun getLayoutId(): Int = R.layout.item_story
-    override fun onBind(binding: ItemStoryBinding, position: Int, item: StoryItemResponse) {
-        binding.item = item
-        with(binding) {
-            Glide.with(root.context)
-                .load(item.photoUrl)
-                .apply(RequestOptions.placeholderOf(R.drawable.ic_loading).error(R.drawable.ic_error))
-                .into(ivItemPhoto)
+    override fun onBind(binding: ViewDataBinding, position: Int, item: BaseListItem) {
+        // do nothing
+    }
 
-            cvStory.setOnClickListener { storyListener.onItemClick(binding, position, item) }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = getItem(position)
+
+        if (holder is StoryViewHolder && item is StoryItemResponse) {
+            holder.bindData(item, storyListener)
         }
+        super.onBindViewHolder(holder, position)
+    }
+
+    override fun onCustomViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return StoryViewHolder(
+            DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context),
+                R.layout.item_story, parent, false
+            )
+        )
     }
 
     interface StoryListener {
-        fun onItemClick(view: ItemStoryBinding, position: Int, item: StoryItemResponse)
+        fun onItemClick(itemStory: ItemStoryBinding, itemResponse: StoryItemResponse)
     }
 }
