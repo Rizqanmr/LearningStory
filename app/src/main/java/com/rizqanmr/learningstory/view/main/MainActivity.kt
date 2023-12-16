@@ -23,6 +23,7 @@ import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.createstory.CreateStoryActivity
 import com.rizqanmr.learningstory.view.landing.LandingActivity
+import com.rizqanmr.learningstory.view.map.MapsActivity
 import com.rizqanmr.learningstory.view.storydetail.StoryDetailActivity
 
 class MainActivity : BaseAppCompatActivity() {
@@ -115,6 +116,10 @@ class MainActivity : BaseAppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.menu_map -> {
+                MapsActivity.startThisActivity(this, bundleOf())
+                true
+            }
             R.id.menu_setting -> {
                 startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
                 true

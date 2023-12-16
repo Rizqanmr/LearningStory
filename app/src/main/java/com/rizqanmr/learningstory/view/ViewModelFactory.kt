@@ -8,6 +8,7 @@ import com.rizqanmr.learningstory.di.Injection
 import com.rizqanmr.learningstory.view.createstory.CreateStoryViewModel
 import com.rizqanmr.learningstory.view.login.LoginViewModel
 import com.rizqanmr.learningstory.view.main.MainViewModel
+import com.rizqanmr.learningstory.view.map.MapsViewModel
 import com.rizqanmr.learningstory.view.register.RegisterViewModel
 import com.rizqanmr.learningstory.view.storydetail.StoryDetailViewModel
 
@@ -30,6 +31,9 @@ class ViewModelFactory(private val repository: AppRepository) : ViewModelProvide
             }
             modelClass.isAssignableFrom(CreateStoryViewModel::class.java) -> {
                 CreateStoryViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                MapsViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

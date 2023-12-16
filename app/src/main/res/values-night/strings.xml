@@ -37,4 +37,9 @@
     <string name="create_story">Create Story</string>
     <string name="no_media_selected">No media selected</string>
     <string name="detail_story">Detail Story</string>
+    <string name="map">Map</string>
+    <string name="normal_type">Normal</string>
+    <string name="satellite_type">Satellite</string>
+    <string name="terrain_type">Terrain</string>
+    <string name="hybrid_type">Hybrid</string>
 </resources>
