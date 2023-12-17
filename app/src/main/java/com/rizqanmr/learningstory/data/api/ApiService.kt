@@ -25,7 +25,11 @@ interface ApiService {
     suspend fun login(@Body loginReqBody: LoginReqBody): LoginResponse
 
     @GET("stories")
-    suspend fun getStories(@Query("location") location : Int?): StoryResponse
+    suspend fun getStories(
+        @Query("location") location : Int?,
+        @Query("page") page: Int?,
+        @Query("size") size: Int?
+    ): StoryResponse
 
     @GET("stories/{storyId}")
     suspend fun getStoryDetail(@Path("storyId") storyId: String): StoryDetailResponse

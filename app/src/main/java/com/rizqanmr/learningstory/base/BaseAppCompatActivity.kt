@@ -38,7 +38,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity() {
             PorterDuff.Mode.SRC_IN
         )
         binding.btnBack.setOnClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         binding.appBarBase.setBackgroundColor(ContextCompat.getColor(this, bgToolbarColor))
 

@@ -50,9 +50,9 @@ class AppRepository private constructor(
         }
     }
 
-    suspend fun getStories(location: Int? = 0): Result<StoryResponse> {
+    suspend fun getStories(location: Int, page: Int? = 1, size: Int? = 5): Result<StoryResponse> {
         return try {
-            val response = getToken().getStories(location)
+            val response = getToken().getStories(location, page, size)
             Result.Success(response)
         } catch (e: HttpException) {
             Result.Error(getErrorMessage(e))
