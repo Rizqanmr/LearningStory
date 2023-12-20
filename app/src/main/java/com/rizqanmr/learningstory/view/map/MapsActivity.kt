@@ -3,7 +3,9 @@ package com.rizqanmr.learningstory.view.map
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
@@ -112,6 +115,7 @@ class MapsActivity : BaseAppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isMapToolbarEnabled = true
 
         getMyLocation()
+        setMapStyle()
     }
 
     private val requestPermissionLauncher =
@@ -172,7 +176,21 @@ class MapsActivity : BaseAppCompatActivity(), OnMapReadyCallback {
         Snackbar.make(binding.containerMaps, message, Snackbar.LENGTH_SHORT).show()
     }
 
+    private fun setMapStyle() {
+        try {
+            val success =
+                mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.")
+            }
+        } catch (exception: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: ", exception)
+        }
+    }
+
     companion object {
+        private const val TAG = "MapsActivity"
+
         @JvmStatic
         fun startThisActivity(activity: Activity, bundle: Bundle) {
             activity.startActivity(Intent(activity, MapsActivity::class.java).apply {
