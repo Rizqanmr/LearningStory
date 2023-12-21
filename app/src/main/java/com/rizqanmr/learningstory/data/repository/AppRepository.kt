@@ -68,9 +68,14 @@ class AppRepository private constructor(
         }
     }
 
-    suspend fun createStory(imageFile: MultipartBody.Part, description: RequestBody) : Result<RegisterResponse> {
+    suspend fun createStory(
+        imageFile: MultipartBody.Part,
+        description: RequestBody,
+        lat: RequestBody?,
+        lon: RequestBody?
+    ) : Result<RegisterResponse> {
         return try {
-            val response = getToken().createStory(imageFile, description)
+            val response = getToken().createStory(imageFile, description, lat, lon)
             Result.Success(response)
         } catch (e: HttpException) {
             Result.Error(getErrorMessage(e))

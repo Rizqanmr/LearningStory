@@ -7,10 +7,9 @@ import com.rizqanmr.learningstory.base.BaseViewModel
 import com.rizqanmr.learningstory.data.model.response.RegisterResponse
 import com.rizqanmr.learningstory.data.repository.AppRepository
 import com.rizqanmr.learningstory.data.repository.Result
+import com.rizqanmr.learningstory.util.CommonFunction
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
@@ -19,18 +18,20 @@ class CreateStoryViewModel(private val repository: AppRepository, ) : BaseViewMo
     private val createStoryLiveData: MutableLiveData<RegisterResponse?> = MutableLiveData()
     private val errorCreateStoryLiveData: MutableLiveData<String> = MutableLiveData()
 
-    fun createStory(file: File, description: String) = viewModelScope.launch {
+    fun createStory(
+        file: File,
+        description: String,
+        latitude: String?,
+        longitude: String?
+    ) = viewModelScope.launch {
         setIsLoading(true)
 
-        val requestBody = description.toRequestBody("text/plain".toMediaType())
-        val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
-        val multipartBody = MultipartBody.Part.createFormData(
-            "photo",
-            file.name,
-            requestImageFile
-        )
+        val desc = description.toRequestBody("text/plain".toMediaType())
+        val lat = latitude?.toRequestBody("text/plain".toMediaType())
+        val lon = longitude?.toRequestBody("text/plain".toMediaType())
+        val multipartBody = CommonFunction.prepareFilePart(file, "photo")
 
-        when (val result = repository.createStory(multipartBody, requestBody)) {
+        when (val result = repository.createStory(multipartBody, desc, lat, lon)) {
             is Result.Success -> createStoryLiveData.value = result.data
             is Result.Error -> errorCreateStoryLiveData.value = result.error
         }

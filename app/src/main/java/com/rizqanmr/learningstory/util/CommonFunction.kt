@@ -7,6 +7,9 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.util.Patterns
 import androidx.exifinterface.media.ExifInterface
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -77,5 +80,10 @@ object CommonFunction {
         return Bitmap.createBitmap(
             source, 0, 0, source.width, source.height, matrix, true
         )
+    }
+
+    fun prepareFilePart(file: File, partName: String) : MultipartBody.Part {
+        val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
+        return MultipartBody.Part.createFormData(partName, file.name, requestImageFile)
     }
 }
