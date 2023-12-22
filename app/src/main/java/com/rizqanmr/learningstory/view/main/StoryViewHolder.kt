@@ -1,13 +1,13 @@
 package com.rizqanmr.learningstory.view.main
 
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.rizqanmr.learningstory.R
-import com.rizqanmr.learningstory.base.BaseListAdapter
 import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
 import com.rizqanmr.learningstory.databinding.ItemStoryBinding
 
-class StoryViewHolder(binding: ItemStoryBinding) : BaseListAdapter.ViewHolder(binding) {
+class StoryViewHolder(private val binding: ItemStoryBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bindData(
         itemResponse: StoryItemResponse,
         listener: StoryAdapter.StoryListener

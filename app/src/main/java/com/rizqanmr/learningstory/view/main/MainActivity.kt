@@ -20,7 +20,6 @@ import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
 import com.rizqanmr.learningstory.databinding.ActivityMainBinding
 import com.rizqanmr.learningstory.databinding.ItemStoryBinding
 import com.rizqanmr.learningstory.base.BaseAppCompatActivity
-import com.rizqanmr.learningstory.base.BaseListItem
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.createstory.CreateStoryActivity
 import com.rizqanmr.learningstory.view.landing.LandingActivity
@@ -136,7 +135,7 @@ class MainActivity : BaseAppCompatActivity() {
         binding.layoutLoading.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    private fun showListStory(list: PagingData<BaseListItem>) {
+    private fun showListStory(list: PagingData<StoryItemResponse>) {
         storyAdapter.submitData(lifecycle, list)
     }
 

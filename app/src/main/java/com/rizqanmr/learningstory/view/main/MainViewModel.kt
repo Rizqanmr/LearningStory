@@ -9,18 +9,18 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
-import com.rizqanmr.learningstory.base.BaseListItem
 import com.rizqanmr.learningstory.base.BaseViewModel
 import com.rizqanmr.learningstory.data.StoryPagingSource
 import com.rizqanmr.learningstory.data.repository.AppRepository
 import com.rizqanmr.learningstory.data.model.UserModel
+import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val repository: AppRepository
 ) : BaseViewModel() {
 
-    private var listStoryLiveData: LiveData<PagingData<BaseListItem>> = MutableLiveData()
+    private var listStoryLiveData: LiveData<PagingData<StoryItemResponse>> = MutableLiveData()
 
     fun getSession(): LiveData<UserModel> {
         return repository.getSession().asLiveData()
@@ -50,6 +50,6 @@ class MainViewModel(
         setIsLoading(false)
     }
 
-    fun listStoryLiveData(): LiveData<PagingData<BaseListItem>> = listStoryLiveData
+    fun listStoryLiveData(): LiveData<PagingData<StoryItemResponse>> = listStoryLiveData
 
 }
