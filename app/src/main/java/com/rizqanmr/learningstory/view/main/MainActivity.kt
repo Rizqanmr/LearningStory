@@ -41,7 +41,6 @@ class MainActivity : BaseAppCompatActivity() {
 
         setupView()
         setupAction()
-        viewModel.getStories()
         subscribeToLiveData()
     }
 
@@ -69,7 +68,7 @@ class MainActivity : BaseAppCompatActivity() {
         viewModel.getIsLoading().observe(this) {
             showLoading(it)
         }
-        viewModel.listStoryLiveData().observe(this) {
+        viewModel.getStories().observe(this) {
             showListStory(it)
         }
     }

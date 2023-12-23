@@ -46,6 +46,7 @@ android {
 }
 
 dependencies {
+    testImplementation("junit:junit:4.12")
     val cameraxVersion = "1.3.0"
     val lifecycleVersion = "2.6.2"
     val retrofitVersion = "2.9.0"
@@ -78,7 +79,15 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
     implementation("androidx.camera:camera-view:$cameraxVersion")
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0") // InstantTaskExecutorRule
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4") //TestDispatcher
+    testImplementation("androidx.arch.core:core-testing:2.2.0") // InstantTaskExecutorRule
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4") //TestDispatcher
+    testImplementation("org.mockito:mockito-core:3.12.4")
+    testImplementation("org.mockito:mockito-inline:3.12.4")
+    testImplementation("org.robolectric:robolectric:4.7.1")
 }

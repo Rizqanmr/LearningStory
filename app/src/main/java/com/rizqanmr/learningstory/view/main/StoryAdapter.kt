@@ -10,7 +10,7 @@ import com.rizqanmr.learningstory.databinding.ItemStoryBinding
 class StoryAdapter : PagingDataAdapter<StoryItemResponse, StoryViewHolder>(DIFF_CALLBACK) {
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryItemResponse>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryItemResponse>() {
             override fun areItemsTheSame(oldItem: StoryItemResponse, newItem: StoryItemResponse): Boolean {
                 return oldItem == newItem
             }

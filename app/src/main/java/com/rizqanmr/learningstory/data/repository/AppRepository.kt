@@ -1,6 +1,14 @@
 package com.rizqanmr.learningstory.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.google.gson.Gson
+import com.rizqanmr.learningstory.data.StoryPagingSource
+import com.rizqanmr.learningstory.data.StoryRemoteMediator
 import com.rizqanmr.learningstory.data.api.ApiConfig
 import com.rizqanmr.learningstory.data.api.ApiService
 import com.rizqanmr.learningstory.data.model.UserModel
@@ -8,6 +16,7 @@ import com.rizqanmr.learningstory.data.model.reqbody.LoginReqBody
 import com.rizqanmr.learningstory.data.pref.UserPreference
 import com.rizqanmr.learningstory.data.model.reqbody.RegisterReqBody
 import com.rizqanmr.learningstory.data.model.response.*
+import com.rizqanmr.learningstory.database.StoryDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -18,7 +27,8 @@ import retrofit2.HttpException
 
 class AppRepository private constructor(
     private val userPreference: UserPreference,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val database: StoryDatabase
 ) {
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
@@ -50,9 +60,26 @@ class AppRepository private constructor(
         }
     }
 
-    suspend fun getStories(location: Int, page: Int? = 1, size: Int? = 5): Result<StoryResponse> {
+    fun getStories(): LiveData<PagingData<StoryItemResponse>> {
+        val apiServiceWithToken = getToken()
+        @OptIn(ExperimentalPagingApi::class)
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5,
+                prefetchDistance = 1,
+                enablePlaceholders = false
+            ),
+            remoteMediator = StoryRemoteMediator(database, apiServiceWithToken),
+            pagingSourceFactory = {
+                //StoryPagingSource(apiService)
+                database.storyDao().getAllStory()
+            }
+        ).liveData
+    }
+
+    suspend fun getStoriesWithMap(): Result<StoryResponse> {
         return try {
-            val response = getToken().getStories(location, page, size)
+            val response = getToken().getStories(1, 1, 10)
             Result.Success(response)
         } catch (e: HttpException) {
             Result.Error(getErrorMessage(e))
@@ -98,10 +125,11 @@ class AppRepository private constructor(
         private var instance: AppRepository? = null
         fun getInstance(
             userPreference: UserPreference,
-            apiService: ApiService
+            apiService: ApiService,
+            database: StoryDatabase
         ): AppRepository =
             instance ?: synchronized(this) {
-                instance ?: AppRepository(userPreference, apiService)
+                instance ?: AppRepository(userPreference, apiService, database)
             }.also { instance = it }
     }
 }

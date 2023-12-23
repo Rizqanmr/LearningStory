@@ -17,7 +17,7 @@ class MapsViewModel(private val repository: AppRepository) : BaseViewModel() {
     fun getStories() = viewModelScope.launch {
         setIsLoading(true)
 
-        when (val result = repository.getStories(1)) {
+        when (val result = repository.getStoriesWithMap()) {
             is Result.Success -> listStoryLiveData.value = result.data.listStory
             is Result.Error -> errorListStoryLiveData.value = result.error
         }
