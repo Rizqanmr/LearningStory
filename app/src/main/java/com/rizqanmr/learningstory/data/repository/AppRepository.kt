@@ -7,7 +7,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
 import com.google.gson.Gson
-import com.rizqanmr.learningstory.data.StoryPagingSource
 import com.rizqanmr.learningstory.data.StoryRemoteMediator
 import com.rizqanmr.learningstory.data.api.ApiConfig
 import com.rizqanmr.learningstory.data.api.ApiService
@@ -60,9 +59,9 @@ class AppRepository private constructor(
         }
     }
 
+    @OptIn(ExperimentalPagingApi::class)
     fun getStories(): LiveData<PagingData<StoryItemResponse>> {
         val apiServiceWithToken = getToken()
-        @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(
                 pageSize = 5,
@@ -71,7 +70,6 @@ class AppRepository private constructor(
             ),
             remoteMediator = StoryRemoteMediator(database, apiServiceWithToken),
             pagingSourceFactory = {
-                //StoryPagingSource(apiService)
                 database.storyDao().getAllStory()
             }
         ).liveData
