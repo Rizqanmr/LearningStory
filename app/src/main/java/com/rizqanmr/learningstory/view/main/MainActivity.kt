@@ -12,9 +12,9 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
 import com.rizqanmr.learningstory.databinding.ActivityMainBinding
@@ -23,6 +23,7 @@ import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.view.ViewModelFactory
 import com.rizqanmr.learningstory.view.createstory.CreateStoryActivity
 import com.rizqanmr.learningstory.view.landing.LandingActivity
+import com.rizqanmr.learningstory.view.map.MapsActivity
 import com.rizqanmr.learningstory.view.storydetail.StoryDetailActivity
 
 class MainActivity : BaseAppCompatActivity() {
@@ -37,11 +38,9 @@ class MainActivity : BaseAppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        storyAdapter = StoryAdapter()
 
         setupView()
         setupAction()
-        viewModel.getStories()
         subscribeToLiveData()
     }
 
@@ -49,10 +48,13 @@ class MainActivity : BaseAppCompatActivity() {
         setupToolbar()
         setStatusBarSolidColor(R.color.sky_blue, true)
 
+        storyAdapter = StoryAdapter()
         binding.rvStory.apply {
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
             setHasFixedSize(true)
-            adapter = storyAdapter
+            adapter = storyAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter { storyAdapter.retry() }
+            )
         }
     }
 
@@ -66,11 +68,8 @@ class MainActivity : BaseAppCompatActivity() {
         viewModel.getIsLoading().observe(this) {
             showLoading(it)
         }
-        viewModel.listStoryLiveData().observe(this) {
+        viewModel.getStories().observe(this) {
             showListStory(it)
-        }
-        viewModel.errorListStoryLiveData().observe(this) {
-            handleError(it)
         }
     }
 
@@ -115,6 +114,10 @@ class MainActivity : BaseAppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.menu_map -> {
+                MapsActivity.startThisActivity(this, bundleOf())
+                true
+            }
             R.id.menu_setting -> {
                 startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
                 true
@@ -131,24 +134,8 @@ class MainActivity : BaseAppCompatActivity() {
         binding.layoutLoading.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    private fun showSnackbarError(message: String) {
-        Snackbar.make(binding.containerMain, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun showListStory(list: List<StoryItemResponse>) {
-        if (list.isNotEmpty()) {
-            binding.rvStory.isVisible = true
-            storyAdapter.updateItems(list)
-        } else {
-            binding.rvStory.isVisible = false
-            showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.EMPTY_LIST)
-        }
-    }
-
-    private fun handleError(error: String) {
-        showSnackbarError(error)
-        showErrorEmptyLayout(binding.layoutError, layoutType = LayoutType.ERROR)
-        binding.layoutError.btnRefresh.setOnClickListener { viewModel.getStories() }
+    private fun showListStory(list: PagingData<StoryItemResponse>) {
+        storyAdapter.submitData(lifecycle, list)
     }
 
     companion object {

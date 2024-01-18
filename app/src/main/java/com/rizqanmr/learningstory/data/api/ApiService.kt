@@ -14,6 +14,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -24,7 +25,11 @@ interface ApiService {
     suspend fun login(@Body loginReqBody: LoginReqBody): LoginResponse
 
     @GET("stories")
-    suspend fun getStories(): StoryResponse
+    suspend fun getStories(
+        @Query("location") location : Int?,
+        @Query("page") page: Int?,
+        @Query("size") size: Int?
+    ): StoryResponse
 
     @GET("stories/{storyId}")
     suspend fun getStoryDetail(@Path("storyId") storyId: String): StoryDetailResponse
@@ -33,6 +38,8 @@ interface ApiService {
     @POST("stories")
     suspend fun createStory(
         @Part file: MultipartBody.Part,
-        @Part("description") description: RequestBody
+        @Part("description") description: RequestBody,
+        @Part("lat") lat: RequestBody?,
+        @Part("lon") lon: RequestBody?
     ): RegisterResponse
 }

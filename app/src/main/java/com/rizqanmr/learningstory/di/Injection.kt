@@ -5,6 +5,7 @@ import com.rizqanmr.learningstory.data.repository.AppRepository
 import com.rizqanmr.learningstory.data.api.ApiConfig
 import com.rizqanmr.learningstory.data.pref.UserPreference
 import com.rizqanmr.learningstory.data.pref.dataStore
+import com.rizqanmr.learningstory.database.StoryDatabase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -13,6 +14,7 @@ object Injection {
         val pref = UserPreference.getInstance(context.dataStore)
         val user = runBlocking { pref.getSession().first() }
         val apiService = ApiConfig.getApiService(user.token)
-        return AppRepository.getInstance(pref, apiService)
+        val database = StoryDatabase.getDatabase(context)
+        return AppRepository.getInstance(pref, apiService, database)
     }
 }

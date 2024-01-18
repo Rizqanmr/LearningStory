@@ -1,8 +1,10 @@
 package com.rizqanmr.learningstory.data.model.response
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import com.rizqanmr.learningstory.base.BaseListItem
 
+@Entity(tableName = "story")
 data class StoryItemResponse(
     @field:SerializedName("photoUrl")
     val photoUrl: String? = null,
@@ -19,9 +21,10 @@ data class StoryItemResponse(
     @field:SerializedName("lon")
     val lon: Double? = null,
 
+    @PrimaryKey
     @field:SerializedName("id")
-    val id: String? = null,
+    val id: String,
 
     @field:SerializedName("lat")
     val lat: Double? = null
-) : BaseListItem(0)
+)

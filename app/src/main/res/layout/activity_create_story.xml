@@ -96,6 +96,17 @@
                         android:inputType="text|textMultiLine" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cb_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp32"
+                    android:layout_marginTop="@dimen/dp8"
+                    android:text="@string/use_your_location"
+                    app:layout_constraintBottom_toTopOf="@id/btn_upload"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_description_layout" />
+
                 <Button
                     android:id="@+id/btn_upload"
                     android:layout_width="@dimen/dp0"
@@ -107,7 +118,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_description_layout"/>
+                    app:layout_constraintTop_toBottomOf="@id/cb_location"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -37,4 +37,10 @@
     <string name="create_story">Buat Cerita</string>
     <string name="no_media_selected">Tidak ada media yang dipilih</string>
     <string name="detail_story">Detail Cerita</string>
+    <string name="map">Peta</string>
+    <string name="normal_type">Normal</string>
+    <string name="satellite_type">Satelit</string>
+    <string name="terrain_type">Medan</string>
+    <string name="hybrid_type">Campuran</string>
+    <string name="use_your_location">Gunakan lokasi anda</string>
 </resources>

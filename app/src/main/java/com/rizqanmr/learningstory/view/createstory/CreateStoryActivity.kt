@@ -11,10 +11,13 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.rizqanmr.learningstory.R
 import com.rizqanmr.learningstory.base.BaseAppCompatActivity
 import com.rizqanmr.learningstory.databinding.ActivityCreateStoryBinding
@@ -31,14 +34,18 @@ class CreateStoryActivity : BaseAppCompatActivity() {
     }
     private lateinit var binding: ActivityCreateStoryBinding
     private var currentImageUri: Uri? = null
-    private val requestPermissionLauncher =
+    private var isLocationEnable: Boolean = false
+    private var latitude = 0.0
+    private var longitude = 0.0
+
+    private val cameraPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                Toast.makeText(this, "Permission request granted", Toast.LENGTH_LONG).show()
+                openCamera()
             } else {
-                Toast.makeText(this, "Permission request denied", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Permission request denied", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -49,21 +56,27 @@ class CreateStoryActivity : BaseAppCompatActivity() {
         setupView()
         setupAction()
         subscribeToLiveData()
-
-        if (!allPermissionsGranted()) {
-            requestPermissionLauncher.launch(REQUIRED_PERMISSION)
-        }
     }
 
     private fun setupView() {
         setupToolbar()
-        setStatusBarSolidColor(R.color.white, true)
+        setStatusBarSolidColor(R.color.sky_blue, true)
     }
 
     private fun setupAction() {
         binding.btnGallery.setOnClickListener { openGallery() }
         binding.btnCamera.setOnClickListener { openCamera() }
         binding.btnUpload.setOnClickListener { uploadImage() }
+        binding.cbLocation.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                isLocationEnable = true
+                getLocation()
+            } else {
+                isLocationEnable = false
+                latitude = 0.0
+                longitude = 0.0
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -72,7 +85,7 @@ class CreateStoryActivity : BaseAppCompatActivity() {
             getString(R.string.create_story),
             R.color.black,
             R.color.black,
-            R.color.white,
+            R.color.sky_blue,
             R.drawable.ic_arrow_back
         )
     }
@@ -102,8 +115,12 @@ class CreateStoryActivity : BaseAppCompatActivity() {
     }
 
     private fun openCamera() {
-        val intent = Intent(this, CameraActivity::class.java)
-        launcherIntentCameraX.launch(intent)
+        if (!cameraPermissionsGranted()) {
+            cameraPermissionLauncher.launch(CAMERA_PERMISSION)
+        } else {
+            val intent = Intent(this, CameraActivity::class.java)
+            launcherIntentCameraX.launch(intent)
+        }
     }
 
     private val launcherGallery = registerForActivityResult(
@@ -132,17 +149,22 @@ class CreateStoryActivity : BaseAppCompatActivity() {
         }
     }
 
-    private fun allPermissionsGranted() =
+    private fun cameraPermissionsGranted() =
         ContextCompat.checkSelfPermission(
             this,
-            REQUIRED_PERMISSION
+            CAMERA_PERMISSION
         ) == PackageManager.PERMISSION_GRANTED
 
     private fun uploadImage() {
         currentImageUri?.let { uri ->
             val imageFile = uriToFile(uri, this).reduceFileImage()
             val description = binding.edAddDescription.text.toString()
-            viewModel.createStory(imageFile, description)
+
+            if (isLocationEnable) {
+                viewModel.createStory(imageFile, description, latitude.toString(), longitude.toString())
+            } else {
+                viewModel.createStory(imageFile, description, null, null)
+            }
         } ?: showSnackbar(getString(R.string.empty_image_warning))
     }
 
@@ -150,8 +172,47 @@ class CreateStoryActivity : BaseAppCompatActivity() {
         MainActivity.startThisActivity(this, bundleOf())
     }
 
+    private fun getLocation() {
+        val fusedLocationProviderClient: FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(this)
+
+        if (ActivityCompat.checkSelfPermission(this, LOCATION_PERMISSION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(LOCATION_PERMISSION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    latitude = location.latitude
+                    longitude = location.longitude
+                }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                isLocationEnable = true
+                getLocation()
+            } else {
+                isLocationEnable = false
+            }
+        }
+    }
+
     companion object {
-        private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
+        private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
+        private const val LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 123
 
         @JvmStatic
         fun startThisActivity(activity: Activity, bundle: Bundle) {

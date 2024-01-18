@@ -1,20 +1,19 @@
 package com.rizqanmr.learningstory.view.main
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.rizqanmr.learningstory.base.BaseViewModel
 import com.rizqanmr.learningstory.data.repository.AppRepository
 import com.rizqanmr.learningstory.data.model.UserModel
 import com.rizqanmr.learningstory.data.model.response.StoryItemResponse
-import com.rizqanmr.learningstory.data.repository.Result
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository: AppRepository) : BaseViewModel() {
-
-    private val listStoryLiveData: MutableLiveData<List<StoryItemResponse>> = MutableLiveData()
-    private val errorListStoryLiveData: MutableLiveData<String> = MutableLiveData()
+class MainViewModel(
+    private val repository: AppRepository
+) : BaseViewModel() {
 
     fun getSession(): LiveData<UserModel> {
         return repository.getSession().asLiveData()
@@ -26,18 +25,7 @@ class MainViewModel(private val repository: AppRepository) : BaseViewModel() {
         }
     }
 
-    fun getStories() = viewModelScope.launch {
-        setIsLoading(true)
+    fun getStories() : LiveData<PagingData<StoryItemResponse>> =
+        repository.getStories().cachedIn(viewModelScope)
 
-        when (val result = repository.getStories()) {
-            is Result.Success -> listStoryLiveData.value = result.data.listStory
-            is Result.Error -> errorListStoryLiveData.value = result.error
-        }
-
-        setIsLoading(false)
-    }
-
-    fun listStoryLiveData(): MutableLiveData<List<StoryItemResponse>> = listStoryLiveData
-
-    fun errorListStoryLiveData(): LiveData<String> = errorListStoryLiveData
 }
